@@ -1,0 +1,16 @@
+{
+  "name": "quake-report-api",
+  "version": "1.0.0",
+  "description": "O Quake Report API executa o parse do log do servidor do Quake Arena 3 e diponibiliza em api a consulta dos resultados dos jogos.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Cleber Fonseca",
+  "license": "ISC",
+  "dependencies": {
+    "config": "1.26.1",
+    "consign": "0.1.6"
+  }
+}
