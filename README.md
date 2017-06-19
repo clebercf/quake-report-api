@@ -15,7 +15,7 @@ git clone https://github.com/clebercf/quake-report-api.git
 
 Entre na pasta do projeto e executa o comando de instalação, conforme ilustrado abaixo.
 ```bash
-cd ../quake-report-api
+cd quake-report-api
 npm install
 ```
 
