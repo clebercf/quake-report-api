@@ -11,6 +11,11 @@
   "license": "ISC",
   "dependencies": {
     "config": "1.26.1",
-    "consign": "0.1.6"
+    "consign": "0.1.6",
+    "express": "4.15.3",
+    "fs": "0.0.1-security",
+    "mocha": "3.4.2",
+    "should": "11.2.1",
+    "sinon": "2.3.4"
   }
 }
