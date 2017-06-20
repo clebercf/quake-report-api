@@ -21,17 +21,21 @@ module.exports = function (app) {
                 aLines.forEach(function (line) {
 
                     if (_self._initGame(line) === true) {
-                        if (game === null) {
-                            game = {
-                                total_kills: 0,
-                                players: [],
-                                kills: {}
-                            };
-                        } else {
+                        // inicio de jogo
+                        if (game !== null) {
                             aGames.push(game);
+                            game = null;
                         }
+                        game = {
+                            id: (aGames.length + 1),
+                            total_kills: 0,
+                            players: [],
+                            kills: {}
+                        };
                     } else if (_self._endGame(line) === true) {
+                        // Fim de jogo
                         aGames.push(game);
+                        game = null;
                     }
                 });
 
