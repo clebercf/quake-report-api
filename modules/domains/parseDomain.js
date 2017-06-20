@@ -32,6 +32,15 @@ module.exports = function (app) {
                             players: [],
                             kills: {}
                         };
+                    } else if (_self._clientEvent(line) === true) {
+                        // o jogador entrou no game
+                        var arr = line.split("\\");
+
+                        if (game.players.indexOf(arr[1]) === -1) {
+                            game.players.push(arr[1]);
+                            game.kills['' + arr[1] + ''] = 0;
+                        }
+
                     } else if (_self._endGame(line) === true) {
                         // Fim de jogo
                         aGames.push(game);
@@ -68,10 +77,9 @@ module.exports = function (app) {
             callback((Array.isArray(aReturn) === true));
         },
 
-        _clientEvent: function (line, callback) {
+        _clientEvent: function (line) {
             var regex = "\\s*\\d{1,2}:\\d{2}\\s*(ClientUserinfoChanged)\\w*";
-            var aReturn = line.match(regex);
-            callback((Array.isArray(aReturn) === true));
+            return Array.isArray(line.match(regex));
         },
 
         _endGame: function (line) {

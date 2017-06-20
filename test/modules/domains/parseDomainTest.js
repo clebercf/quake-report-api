@@ -129,31 +129,26 @@ describe("Testa o parseDomain", function () {
     });
 
     it("Deveria indicar que houve um evento de jogador", function (done) {
-        parseDomain._clientEvent(clientEvent, function (match) {
-            (match === true).should.be.true();
-            done();
-        });
+        var ret = parseDomain._clientEvent(clientEvent);
+        (ret === true).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não houve um evento de jogador, ao informar um evento de fim de jogo", function (done) {
-        parseDomain._clientEvent(endGameLine, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._clientEvent(endGameLine);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não houve um evento de jogador, ao informar um evento de kill", function (done) {
-        parseDomain._clientEvent(killEvent, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._clientEvent(killEvent);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não houve um evento de jogador, ao informar um evento de início de jogo", function (done) {
-        parseDomain._clientEvent(initGameLine, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._clientEvent(initGameLine);
+        (ret === false).should.be.true();
+        done();
     });
-
 });
