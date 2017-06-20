@@ -39,5 +39,5 @@ Utilize o navegador de Internet e acesse http://localhost:3000/api/version para 
 
 Execute o comando abaixo para verificar os testes
 ```bash
-./node_modules/.bin/_mocha test/**/*
+npm test
 ```

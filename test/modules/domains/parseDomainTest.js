@@ -28,8 +28,16 @@ describe("Testa o parseDomain", function () {
         done();
     });
 
+    it("Deveria listar a lista de games", function (done) {
+        parseDomain.getGames("file_to_parse/games_teste.log", function (err, games) {
+            (Array.isArray(games)).should.be.true();
+            (games.length === 4).should.be.true();
+            done();
+        });
+    });
+
     it("Deveria falhar ao tentar ler um arquivo que não existe", function (done) {
-        parseDomain._readFile("invalido", function (err) {
+        parseDomain._readFile("invalido", function (err, lines) {
             (err === "Arquivo não localizado").should.be.true();
             done();
         });
@@ -44,59 +52,51 @@ describe("Testa o parseDomain", function () {
     });
 
     it("Deveria indicar que iniciou o jogo", function (done) {
-        parseDomain._initGame(initGameLine, function (match) {
-            (match === true).should.be.true();
-            done();
-        });
+        var ret = parseDomain._initGame(initGameLine);
+        (ret === true).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não iniciou o jogo, ao informar um evento de kill", function (done) {
-        parseDomain._initGame(killEvent, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._initGame(killEvent);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não iniciou o jogo, ao informar um evento do jogador", function (done) {
-        parseDomain._initGame(clientEvent, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._initGame(clientEvent);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não iniciou o jogo, ao informar um evento de fim do jogo", function (done) {
-        parseDomain._initGame(endGameLine, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._initGame(endGameLine);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que finalizou o jogo", function (done) {
-        parseDomain._endGame(endGameLine, function (match) {
-            (match === true).should.be.true();
-            done();
-        });
+        var ret = parseDomain._endGame(endGameLine);
+        (ret === true).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não finalizou o jogo, ao informar um evento de kill", function (done) {
-        parseDomain._endGame(killEvent, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._endGame(killEvent);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não finalizou o jogo, ao informar um evento do jogador", function (done) {
-        parseDomain._endGame(clientEvent, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._endGame(clientEvent);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não finalizou o jogo, ao informar um evento de início de jogo", function (done) {
-        parseDomain._endGame(initGameLine, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._endGame(initGameLine);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que houve uma morte no jogo", function (done) {
@@ -105,7 +105,7 @@ describe("Testa o parseDomain", function () {
             done();
         });
     });
-    
+
     it("Deveria indicar que não houve uma morte no jogo, ao informar um evento de fim de jogo", function (done) {
         parseDomain._killEvent(endGameLine, function (match) {
             (match === false).should.be.true();
@@ -133,7 +133,7 @@ describe("Testa o parseDomain", function () {
             done();
         });
     });
-    
+
     it("Deveria indicar que não houve um evento de jogador, ao informar um evento de fim de jogo", function (done) {
         parseDomain._clientEvent(endGameLine, function (match) {
             (match === false).should.be.true();

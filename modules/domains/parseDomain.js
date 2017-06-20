@@ -8,6 +8,37 @@ module.exports = function (app) {
 
     var parseDomain = {
 
+        getGames: function (path, callback) {
+
+            var _self = this;
+
+            _self._readFile(path, function (err, aLines) {
+                if (err) callback(err);
+
+                var aGames = [];
+                var game = null;
+
+                aLines.forEach(function (line) {
+
+                    if (_self._initGame(line) === true) {
+                        if (game === null) {
+                            game = {
+                                total_kills: 0,
+                                players: [],
+                                kills: {}
+                            };
+                        } else {
+                            aGames.push(game);
+                        }
+                    } else if (_self._endGame(line) === true) {
+                        aGames.push(game);
+                    }
+                });
+
+                callback(null, aGames);
+            });
+        },
+
         _readFile: function (path, callback) {
             fs.exists(path, function (exists) {
                 if (exists) {
@@ -22,16 +53,9 @@ module.exports = function (app) {
             });
         },
 
-        _initGame: function (line, callback) {
+        _initGame: function (line) {
             var regex = "\\s*\\d{1,2}:\\d{2}\\s*(InitGame)\\w*";
-            var aReturn = line.match(regex);
-            callback((Array.isArray(aReturn) === true));
-        },
-
-        _endGame: function (line, callback) {
-            var regex = "\\s*\\d{1,2}:\\d{2}\\s*(ShutdownGame)\\w*";
-            var aReturn = line.match(regex);
-            callback((Array.isArray(aReturn) === true));
+            return Array.isArray(line.match(regex));
         },
 
         _killEvent: function (line, callback) {
@@ -44,6 +68,11 @@ module.exports = function (app) {
             var regex = "\\s*\\d{1,2}:\\d{2}\\s*(ClientUserinfoChanged)\\w*";
             var aReturn = line.match(regex);
             callback((Array.isArray(aReturn) === true));
+        },
+
+        _endGame: function (line) {
+            var regex = "\\s*\\d{1,2}:\\d{2}\\s*(ShutdownGame)\\w*";
+            return Array.isArray(line.match(regex));
         }
     };
 
