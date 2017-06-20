@@ -37,9 +37,18 @@ module.exports = function (app) {
                         var arr = line.split("\\");
 
                         if (game.players.indexOf(arr[1]) === -1) {
-                            game.players.push(arr[1]);
+                            game.players.push('' + arr[1] + '');
                             game.kills['' + arr[1] + ''] = 0;
                         }
+
+                    } else if (_self._killEvent(line) === true) {
+                        // evento de morte
+                        var ret = _self._parseKillEvent(line);
+
+                        if (ret.firstPlayer.toUpperCase() !== "<WORLD>" && ret.firstPlayer.toUpperCase() !== ret.secondPlayer.toUpperCase()) {
+                            game.kills['' + ret.firstPlayer + ''] = game.kills['' + ret.firstPlayer + ''] + 1;
+                        }
+                        game.total_kills = game.total_kills + 1;
 
                     } else if (_self._endGame(line) === true) {
                         // Fim de jogo
@@ -71,10 +80,23 @@ module.exports = function (app) {
             return Array.isArray(line.match(regex));
         },
 
-        _killEvent: function (line, callback) {
+        _killEvent: function (line) {
             var regex = "\\s*\\d{1,2}:\\d{2}\\s*(Kill)\\w*";
-            var aReturn = line.match(regex);
-            callback((Array.isArray(aReturn) === true));
+            return Array.isArray(line.match(regex));
+        },
+
+        _parseKillEvent: function (line) {
+            var arr = line.split("killed");
+            var aFirstPlayer = arr[0].split(":");
+            var firstPlayer = aFirstPlayer[aFirstPlayer.length - 1].trim();
+
+            var aSecondPlayer = arr[1].split("by");
+            var secondPlayer = aSecondPlayer[0].trim();
+
+            return {
+                'firstPlayer': firstPlayer, 
+                'secondPlayer' : secondPlayer
+            };
         },
 
         _clientEvent: function (line) {

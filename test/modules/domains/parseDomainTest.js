@@ -28,11 +28,10 @@ describe("Testa o parseDomain", function () {
         done();
     });
 
-    it("Deveria listar a lista de games", function (done) {
+    it("Deveria listar a lista de games do arquivo de teste", function (done) {
         parseDomain.getGames("file_to_parse/games_teste.log", function (err, games) {
             (Array.isArray(games)).should.be.true();
             (games.length === 3).should.be.true();
-            console.log(games);
             done();
         });
     });
@@ -101,31 +100,27 @@ describe("Testa o parseDomain", function () {
     });
 
     it("Deveria indicar que houve uma morte no jogo", function (done) {
-        parseDomain._killEvent(killEvent, function (match) {
-            (match === true).should.be.true();
-            done();
-        });
+        var ret = parseDomain._killEvent(killEvent);
+        (ret === true).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não houve uma morte no jogo, ao informar um evento de fim de jogo", function (done) {
-        parseDomain._killEvent(endGameLine, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._killEvent(endGameLine);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não houve uma morte no jogo, ao informar um evento do jogador", function (done) {
-        parseDomain._killEvent(clientEvent, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._killEvent(clientEvent);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que não houve uma morte no jogo, ao informar um evento de início de jogo", function (done) {
-        parseDomain._killEvent(initGameLine, function (match) {
-            (match === false).should.be.true();
-            done();
-        });
+        var ret = parseDomain._killEvent(initGameLine);
+        (ret === false).should.be.true();
+        done();
     });
 
     it("Deveria indicar que houve um evento de jogador", function (done) {
@@ -151,4 +146,19 @@ describe("Testa o parseDomain", function () {
         (ret === false).should.be.true();
         done();
     });
+
+    it("Deveria retornar os players (WORLD e Isgalamido) para o evento no qual o jogador caiu de uma altura e morreu", function (done) {
+        var ret = parseDomain._parseKillEvent("   21:42 Kill: 1022 2 22: <world> killed Isgalamido by MOD_TRIGGER_HURT");
+        (ret.firstPlayer.toUpperCase() === "<WORLD>").should.be.true();
+        (ret.secondPlayer === "Isgalamido").should.be.true();
+        done();
+    });
+
+    it("Deveria retornar os players (Isgalamido e Mocinha) para o evento no qual o jogador 1 matou o outro jogador", function (done) {
+        var ret = parseDomain._parseKillEvent("  1:08 Kill: 3 2 6: Isgalamido killed Mocinha by MOD_ROCKET");
+        (ret.firstPlayer === "Isgalamido").should.be.true();
+        (ret.secondPlayer === "Mocinha").should.be.true();
+        done();
+    });
+
 });
