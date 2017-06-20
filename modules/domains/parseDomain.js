@@ -45,9 +45,16 @@ module.exports = function (app) {
                         // evento de morte
                         var ret = _self._parseKillEvent(line);
 
-                        if (ret.firstPlayer.toUpperCase() !== "<WORLD>" && ret.firstPlayer.toUpperCase() !== ret.secondPlayer.toUpperCase()) {
-                            game.kills['' + ret.firstPlayer + ''] = game.kills['' + ret.firstPlayer + ''] + 1;
+                        if (ret.firstPlayer.toUpperCase() === "<WORLD>") {
+                            game.kills['' + ret.secondPlayer + ''] = game.kills['' + ret.secondPlayer + ''] - 1;
+                        } else {
+                            if (ret.firstPlayer.toUpperCase() === ret.secondPlayer.toUpperCase()) {
+                                game.kills['' + ret.firstPlayer + ''] = game.kills['' + ret.firstPlayer + ''] - 1;
+                            } else {
+                                game.kills['' + ret.firstPlayer + ''] = game.kills['' + ret.firstPlayer + ''] + 1;
+                            }
                         }
+
                         game.total_kills = game.total_kills + 1;
 
                     } else if (_self._endGame(line) === true) {
@@ -94,8 +101,8 @@ module.exports = function (app) {
             var secondPlayer = aSecondPlayer[0].trim();
 
             return {
-                'firstPlayer': firstPlayer, 
-                'secondPlayer' : secondPlayer
+                'firstPlayer': firstPlayer,
+                'secondPlayer': secondPlayer
             };
         },
 
