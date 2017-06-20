@@ -12,5 +12,5 @@ module.exports = function (app) {
     });
 
     app.get('/api/' + config.apiVersion + '/games', gameReportController.getGamesReport);
-
+    app.get('/api/' + config.apiVersion + '/games/:id', gameReportController.getGameReportByIndex);
 };

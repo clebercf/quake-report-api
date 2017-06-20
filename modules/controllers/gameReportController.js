@@ -17,7 +17,7 @@ module.exports = function (app) {
             requestHelper.setResponse(res);
             var notificacao = req.body;
 
-            parseDomain.getGames("file_to_parse/games_teste.log", function (err, data) {
+            parseDomain.getGames("file_to_parse/games.log", function (err, data) {
 
                 if (err) {
                     requestHelper.error(err, 400);
@@ -25,7 +25,30 @@ module.exports = function (app) {
                     requestHelper.success(data, 200);
                 }
             });
-        }
+        },
+
+        getGameReportByIndex: function (req, res) {
+
+            requestHelper.setResponse(res);
+            var notificacao = req.body;
+            var id = req.params.id;
+
+            parseDomain.getGames("file_to_parse/games.log", function (err, data) {
+
+                if (err) {
+                    requestHelper.error(err, 400);
+                } else {
+
+                    var index = data.map(function (elem) { return parseInt(elem.id); }).indexOf(parseInt(id));
+
+                    if (index === -1) {
+                        requestHelper.error({ message : "Game not found."}, 404);
+                    } else {
+                        requestHelper.success(data[index], 200);
+                    }
+                }
+            });
+        },
     };
 
     return gameReportController;

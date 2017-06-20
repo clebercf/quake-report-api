@@ -59,7 +59,7 @@ describe("Testa o gameReportController", function () {
                 (res.body.length === 3).should.be.true();
                 stubDomain.restore();
                 done();
-        });
+            });
     });
 
     it("Deveria não retornar uma lista de games, quando o método que executa o parser do arquivo falhar", function (done) {
@@ -73,6 +73,86 @@ describe("Testa o gameReportController", function () {
                 (res.statusCode === 400).should.be.true();
                 stubDomain.restore();
                 done();
+            });
+    });
+
+    it("Deveria retornar relatório do game #1", function (done) {
+
+        var stubDomain = sinon.sandbox.create().stub(parseDomain, 'getGames', function (path, callback) {
+            return callback(null, [{
+                id: 1,
+                total_kills: 0,
+                players: ['Isgalamido'],
+                kills: { 'Isgalamido': 0 }
+            },
+            {
+                id: 2,
+                total_kills: 11,
+                players: ['Isgalamido', 'Dono da Bola', 'Mocinha'],
+                kills: { 'Isgalamido': -9, 'Dono da Bola': 0, 'Mocinha': 0 }
+            },
+            {
+                id: 3,
+                total_kills: 4,
+                players: ['Dono da Bola', 'Mocinha', 'Isgalamido', 'Zeh'],
+                kills: { 'Dono da Bola': -1, 'Mocinha': 0, 'Isgalamido': 1, 'Zeh': -2 }
+            }]
+            );
         });
+
+        request.get('/api/' + config.apiVersion + '/games/1')
+            .expect(200)
+            .end(function (err, res) {
+                (res.body.id === 1).should.be.true();
+                stubDomain.restore();
+                done();
+            });
+    });
+
+    it("Deveria não retornar o relatório do game #1, quando o método que executa o parser do arquivo falhar", function (done) {
+        var stubDomain = sinon.sandbox.create().stub(parseDomain, 'getGames', function (path, callback) {
+            return callback("error");
+        });
+
+        request.get('/api/' + config.apiVersion + '/games/1')
+            .expect(400)
+            .end(function (err, res) {
+                (res.statusCode === 400).should.be.true();
+                stubDomain.restore();
+                done();
+            });
+    });
+
+    it("Deveria não localizar o relatório do game #4", function (done) {
+
+        var stubDomain = sinon.sandbox.create().stub(parseDomain, 'getGames', function (path, callback) {
+            return callback(null, [{
+                id: 1,
+                total_kills: 0,
+                players: ['Isgalamido'],
+                kills: { 'Isgalamido': 0 }
+            },
+            {
+                id: 2,
+                total_kills: 11,
+                players: ['Isgalamido', 'Dono da Bola', 'Mocinha'],
+                kills: { 'Isgalamido': -9, 'Dono da Bola': 0, 'Mocinha': 0 }
+            },
+            {
+                id: 3,
+                total_kills: 4,
+                players: ['Dono da Bola', 'Mocinha', 'Isgalamido', 'Zeh'],
+                kills: { 'Dono da Bola': -1, 'Mocinha': 0, 'Isgalamido': 1, 'Zeh': -2 }
+            }]
+            );
+        });
+
+        request.get('/api/' + config.apiVersion + '/games/4')
+            .expect(404)
+            .end(function (err, res) {
+                (res.body.message === "Game not found.").should.be.true();
+                stubDomain.restore();
+                done();
+            });
     });
 });
